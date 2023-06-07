@@ -1,0 +1,19 @@
+.card {
+    background-color: white !important;
+    color: Black !important;
+    min-width: 370px;
+    min-height: 250px;
+    margin: 30px;
+}
+
+.margin-left {
+    margin-left: 10px !important;
+}
+
+.image-container {
+    transition: transform 0.2s;
+}
+
+.image-container:hover {
+    transform: scale(1.1);
+}
