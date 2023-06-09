@@ -6,18 +6,6 @@
     margin: 10px;
 }
 
-.margin-left {
-    margin-left: 10px !important;
-}
-
-.image-container {
-    transition: transform 0.2s;
-}
-
-.image-container:hover {
-    transform: scale(1.1);
-}
-
 .card-button {
     text-align: center !important;
     position: absolute;

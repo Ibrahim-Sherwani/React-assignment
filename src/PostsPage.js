@@ -2,11 +2,12 @@ import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { PostCard } from "./components/postCard";
 import useAxiosQuery from "./hooks/useAxiosQuery";
+import { POSTS, COMMENTS } from "./components/constants";
 
 const PostsPage = ({ getUser }) => {
   const navigate = useNavigate();
 
-  const { data: posts, isLoading, setData: setPosts } = useAxiosQuery("posts");
+  const { data: posts, isLoading, setData: setPosts } = useAxiosQuery(POSTS);
   const [reload, setReload] = useState(0);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -40,18 +41,34 @@ const PostsPage = ({ getUser }) => {
       id: lastIndex,
     });
 
-    localStorage.setItem("posts", JSON.stringify(postData));
+    localStorage.setItem(POSTS, JSON.stringify(postData));
     setPosts(postData);
     setTitle("");
     setBody("");
   };
 
-  const deletePost = (id) => {
+  const deletePost = (id, edit = false) => {
     const postData = posts;
     let index = postData.findIndex((x) => x.id === id);
+
+    if (!edit) {
+      deletePostsComments(id);
+    }
+
     postData.splice(index, 1);
     setPosts(postData);
-    localStorage.setItem("posts", JSON.stringify(postData));
+    localStorage.setItem(POSTS, JSON.stringify(postData));
+    setReload(reload + 1);
+  };
+
+  const deletePostsComments = (id) => {
+    const commentData = JSON.parse(localStorage.getItem(COMMENTS));
+    let index = commentData.findIndex((x) => x.postId == id);
+    while (index > 0) {
+      commentData.splice(index, 1);
+      index = commentData.findIndex((x) => x.postId == id);
+    }
+    localStorage.setItem(COMMENTS, JSON.stringify(commentData));
     setReload(reload + 1);
   };
 
@@ -60,7 +77,7 @@ const PostsPage = ({ getUser }) => {
     let index = postData.findIndex((x) => x.id === id);
     setTitle(postData[index].title);
     setBody(postData[index].body);
-    deletePost(id);
+    deletePost(id, true);
     addButtonRef.current.focus();
   };
 

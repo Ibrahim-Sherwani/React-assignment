@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { BASE_URL } from "../components/constants";
 
 const useAxiosQuery = (uri) => {
   const [data, setData] = useState([]);
@@ -11,9 +12,7 @@ const useAxiosQuery = (uri) => {
       if (!storage) {
         try {
           setIsLoading(true);
-          const response = await axios.get(
-            `https://jsonplaceholder.typicode.com/${uri}`
-          );
+          const response = await axios.get(`${BASE_URL + uri}`);
           setData(response.data);
           localStorage.setItem(uri, JSON.stringify(response.data));
         } catch (error) {
