@@ -1,0 +1,25 @@
+.card {
+    background-color: white !important;
+    color: Black !important;
+    min-width: 340px;
+    min-height: 280px;
+    margin: 10px;
+}
+
+.margin-left {
+    margin-left: 10px !important;
+}
+
+.image-container {
+    transition: transform 0.2s;
+}
+
+.image-container:hover {
+    transform: scale(1.1);
+}
+
+.card-button {
+    text-align: center !important;
+    position: absolute;
+    bottom: 10px;
+}

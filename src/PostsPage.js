@@ -1,100 +1,155 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { PostCard } from './components/card'
-
+import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { PostCard } from "./components/postCard";
+import useAxiosQuery from "./hooks/useAxiosQuery";
 
 const PostsPage = ({ getUser }) => {
+  const navigate = useNavigate();
 
+  const { data: posts, isLoading, setData: setPosts } = useAxiosQuery("posts");
+  const [reload, setReload] = useState(0);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
 
-    const navigate = useNavigate();
+  const addButtonRef = useRef(null);
 
-    const [posts, setPosts] = useState([]);
-    const [title, setTitle] = useState('');
-    const [password, setPassword] = useState('');
+  const viewPost = (id) => {
+    navigate("/posts/" + id);
+  };
 
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
+  };
 
-    const viewPost = (id) => {
-        navigate('/posts/' + id);
-    }
+  const handleBodyChange = (e) => {
+    setBody(e.target.value);
+  };
 
-    const addPost = (title, body) => {
-        const postData = posts
-        const user = getUser()
-        console.log(user, user?.email)
+  const addPost = (e) => {
+    e.preventDefault();
 
-        console.log(typeof (postData), postData)
-        const lastIndex = postData.length + 1
-        postData.push({
-            title: title,
-            body: body,
-            userId: user.email,
-            id: lastIndex
-        })
+    const postData = posts;
+    const user = getUser();
 
-        localStorage.setItem('posts', JSON.stringify([postData]))
-        console.log(JSON.parse(localStorage.getItem('posts')))
-    }
+    const lastIndex = postData.length + 1;
 
-    const deletePost = (id) => {
-        const postData = posts
-        let index = postData.findIndex(x => x.id === id);
-        postData.splice(index, 1);
-        localStorage.setItem('posts', JSON.stringify(postData))
-        console.log(JSON.parse(localStorage.getItem('posts')))
-    }
+    postData.push({
+      title: title,
+      body: body,
+      userId: user.email,
+      id: lastIndex,
+    });
 
-    const editPost = (id, title, body) => {
-        const postData = JSON.parse(localStorage.getItem('posts'))
-        let index = postData.findIndex(x => x.id === id);
-        postData[index] = {
-            title: 'title',
-            body: body,
-        }
-        localStorage.setItem('posts', JSON.stringify(postData))
-        console.log(JSON.parse(localStorage.getItem('posts')))
-    }
+    localStorage.setItem("posts", JSON.stringify(postData));
+    setPosts(postData);
+    setTitle("");
+    setBody("");
+  };
 
+  const deletePost = (id) => {
+    const postData = posts;
+    let index = postData.findIndex((x) => x.id === id);
+    postData.splice(index, 1);
+    setPosts(postData);
+    localStorage.setItem("posts", JSON.stringify(postData));
+    setReload(reload + 1);
+  };
 
-    const fetchPosts = async () => {
-        try {
-            const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
-            console.log("prev", response?.data)
-            response.data.push({ a: 3 })
-            console.log(response.data)
-            setPosts(response.data);
-            localStorage.setItem('posts', JSON.stringify(response.data))
-        } catch (error) {
-            // Handle error while fetching posts
-        }
-    };
+  const editPost = (id) => {
+    const postData = posts;
+    let index = postData.findIndex((x) => x.id === id);
+    setTitle(postData[index].title);
+    setBody(postData[index].body);
+    deletePost(id);
+    addButtonRef.current.focus();
+  };
 
-    useEffect(() => {
-        // if (localStorage.getItem('posts')) {
-        //     setPosts(JSON.parse(localStorage.getItem('posts')))
+  return (
+    <div className="container-fluid" style={{ padding: "0px" }}>
+      <div className="d-flex justify-content-center">
+        <h1>Posts</h1>
+      </div>
 
-
-        // } else {
-        //     // setTimeout(() => addPost('help', 'me', user), 6000);
-        // }
-        fetchPosts();
-    }, []);
-
-
-    // console.log(posts[0])
-    // if (posts.length !== 0)
-    //     addPost('hello', 'hellooooo')
-    return (
-        <div className="container-fluid" style={{ "padding": "0px" }}>
-            <button onClick={addPost}>help me plz</button>
-            <div className='d-flex justify-content-center'><h1>Posts</h1></div>
-            <div className="row d-flex justify-content-center m-3">
-                {posts.slice(0).reverse().map((post) => (
-                    <PostCard userId={post.userId} id={post.id} title={post.title} body={post.body} viewPost={viewPost} getUser={getUser} deletePost={deletePost}></PostCard>
-                ))}
+      <section className="py-4 py-xl-5">
+        <div className="container">
+          <div className="row d-flex justify-content-center">
+            <div className="col-md-6 col-xl-4" style={{ paddingLeft: "0px" }}>
+              <div className="card mb-5 sm-3">
+                <div
+                  className="card-body d-flex flex-column align-item-center"
+                  style={{
+                    marginBottom: "-1px",
+                    marginTop: "50px",
+                    paddingTop: "53px",
+                    paddingBottom: "86px",
+                  }}
+                >
+                  <div className="row mb-2">
+                    <div className="col-md-8 col-xl-6 text-center mx-auto">
+                      <h3>Add a new Post</h3>
+                      <p></p>
+                    </div>
+                  </div>
+                  <form className="text-center" onSubmit={addPost}>
+                    <div className="mb-3">
+                      <input
+                        type="text"
+                        id="title"
+                        placeholder="Title"
+                        value={title}
+                        onChange={handleTitleChange}
+                        className="w-100"
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <input
+                        type="text"
+                        id="body"
+                        placeholder="Body"
+                        value={body}
+                        onChange={handleBodyChange}
+                        className="w-100 text-align-center"
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <button
+                        ref={addButtonRef}
+                        className="btn btn-primary w-100"
+                        type="submit"
+                      >
+                        Add Post
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
-    );
+      </section>
+
+      <div className="row d-flex justify-content-center m-3">
+        {posts
+          .slice(0)
+          .reverse()
+          .map((post) => (
+            <PostCard
+              key={post.id}
+              userId={post.userId}
+              id={post.id}
+              title={post.title}
+              body={post.body}
+              viewPost={viewPost}
+              getUser={getUser}
+              deletePost={deletePost}
+              editPost={editPost}
+            ></PostCard>
+          ))}
+      </div>
+    </div>
+  );
 };
 
 export default PostsPage;

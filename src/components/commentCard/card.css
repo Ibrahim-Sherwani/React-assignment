@@ -1,9 +1,9 @@
 .card {
     background-color: white !important;
     color: Black !important;
-    min-width: 370px;
-    min-height: 250px;
-    margin: 30px;
+    min-width: 340px;
+    min-height: 280px;
+    margin: 10px;
 }
 
 .margin-left {
@@ -16,4 +16,10 @@
 
 .image-container:hover {
     transform: scale(1.1);
+}
+
+.card-button {
+    text-align: center !important;
+    position: absolute;
+    bottom: 10px;
 }
