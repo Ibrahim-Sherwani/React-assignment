@@ -62,6 +62,7 @@ const PostsPage = ({ getUser }) => {
     addButtonRef.current.focus();
   };
 
+  const post = posts.findIndex((x) => x.id == postId);
   return (
     <div className="container-fluid" style={{ padding: "0px" }}>
       <div className="d-flex justify-content-center">
@@ -70,10 +71,10 @@ const PostsPage = ({ getUser }) => {
       <div className="row d-flex justify-content-center m-3">
         <PostCard
           key={postId}
-          userId={posts[postId - 1].userId}
+          userId={posts[post].userId}
           id={postId}
-          title={posts[postId - 1].title}
-          body={posts[postId - 1].body}
+          title={posts[post].title}
+          body={posts[post].body}
         ></PostCard>
 
         <section className="py-4 py-xl-5" style={{ paddingLeft: "0px" }}>
