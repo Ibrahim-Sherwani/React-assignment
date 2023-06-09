@@ -11,21 +11,21 @@ import * as CryptoJS from "crypto-js";
 import SignupPage from "./SignupPage";
 import LoginPage from "./LoginPage";
 import PostsPage from "./PostsPage";
-import PostPage from "./PostPage";
+import PostDetailPage from "./PostDetailPage";
 import { Navbar } from "./components/navbar";
+import { SECRET_KEY, TOKEN } from "./components/constants";
 
 const App = () => {
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [token, setToken] = useState(localStorage.getItem(TOKEN));
   const [user, setUser] = useState(null);
   const [isUser, setIsUser] = useState(false);
-  const secretKey = "3C5AD5695D1E5FA9A9771F9597913";
 
   function updateToken() {
-    setToken(localStorage.getItem("token"));
+    setToken(localStorage.getItem(TOKEN));
   }
   function getUser() {
     if (token) {
-      const bytes = CryptoJS.AES.decrypt(JSON.parse(token), secretKey);
+      const bytes = CryptoJS.AES.decrypt(JSON.parse(token), SECRET_KEY);
       const decodedToken = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
       return decodedToken;
     }
@@ -33,7 +33,7 @@ const App = () => {
 
   useEffect(() => {
     if (token) {
-      const bytes = CryptoJS.AES.decrypt(JSON.parse(token), secretKey);
+      const bytes = CryptoJS.AES.decrypt(JSON.parse(token), SECRET_KEY);
       const decodedToken = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
       setUser(decodedToken);
     }
@@ -46,7 +46,7 @@ const App = () => {
   }, [user]);
 
   function handleLogout() {
-    localStorage.removeItem("token");
+    localStorage.removeItem(TOKEN);
     setUser(null);
   }
 
@@ -78,19 +78,13 @@ const App = () => {
             element={
               <>
                 <Navbar handleLogout={handleLogout} />{" "}
-                <PostPage getUser={getUser} />
+                <PostDetailPage getUser={getUser} />
               </>
             }
           />
           <Route
             path="login"
-            element={
-              <LoginPage
-                updateToken={updateToken}
-                secretKey={secretKey}
-                user={user}
-              />
-            }
+            element={<LoginPage updateToken={updateToken} user={user} />}
           />
           <Route path="signup" element={<SignupPage />} />
         </Routes>

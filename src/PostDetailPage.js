@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { PostCard } from "./components/postCard";
 import useAxiosQuery from "./hooks/useAxiosQuery";
 import { CommentCard } from "./components/commentCard";
+import { COMMENTS, POSTS } from "./components/constants";
 
 const PostsPage = ({ getUser }) => {
   const addButtonRef = useRef(null);
@@ -11,13 +12,13 @@ const PostsPage = ({ getUser }) => {
     data: comments,
     isLoading,
     setData: setComments,
-  } = useAxiosQuery("comments");
+  } = useAxiosQuery(COMMENTS);
 
   const [body, setBody] = useState("");
   const [reload, setReload] = useState(0);
 
   const { postId } = useParams();
-  const posts = JSON.parse(localStorage.getItem("posts"));
+  const posts = JSON.parse(localStorage.getItem(POSTS));
 
   const addComment = (e) => {
     e.preventDefault();
@@ -35,7 +36,7 @@ const PostsPage = ({ getUser }) => {
       id: lastIndex,
     });
 
-    localStorage.setItem("comments", JSON.stringify(commentData));
+    localStorage.setItem(COMMENTS, JSON.stringify(commentData));
     setComments(commentData);
     setBody("");
   };
@@ -49,7 +50,7 @@ const PostsPage = ({ getUser }) => {
     const index = commentData.findIndex((x) => x.id === id);
     commentData.splice(index, 1);
     setComments(commentData);
-    localStorage.setItem("comments", JSON.stringify(commentData));
+    localStorage.setItem(COMMENTS, JSON.stringify(commentData));
     setReload(reload + 1);
   };
 
