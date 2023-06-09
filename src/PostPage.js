@@ -49,7 +49,7 @@ const PostsPage = ({ getUser }) => {
     const index = commentData.findIndex((x) => x.id === id);
     commentData.splice(index, 1);
     setComments(commentData);
-    localStorage.setItem("posts", JSON.stringify(commentData));
+    localStorage.setItem("comments", JSON.stringify(commentData));
     setReload(reload + 1);
   };
 

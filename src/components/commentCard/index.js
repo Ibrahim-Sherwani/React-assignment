@@ -18,7 +18,7 @@ export const CommentCard = ({
   }
   return (
     <>
-      {currentPostId === postId ? (
+      {currentPostId == postId ? (
         <div className="card margin-left" style={{ width: "18rem" }}>
           <div className="card-body">
             <h5 className="card-title">{name}</h5>
