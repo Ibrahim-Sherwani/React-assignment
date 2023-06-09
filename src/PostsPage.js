@@ -56,6 +56,11 @@ const PostsPage = ({ getUser }) => {
     }
 
     postData.splice(index, 1);
+
+    for (let i = index; i < postData.length; i++) {
+      postData[i].id = postData[i].id - 1;
+    }
+
     setPosts(postData);
     localStorage.setItem(POSTS, JSON.stringify(postData));
     setReload(reload + 1);
@@ -63,12 +68,15 @@ const PostsPage = ({ getUser }) => {
 
   const deletePostsComments = (id) => {
     const commentData = JSON.parse(localStorage.getItem(COMMENTS));
-    let index = commentData.findIndex((x) => x.postId == id);
-    while (index > 0) {
-      commentData.splice(index, 1);
-      index = commentData.findIndex((x) => x.postId == id);
+    if (commentData) {
+      let index = commentData.findIndex((x) => x.postId == id);
+      while (index > 0) {
+        commentData.splice(index, 1);
+        index = commentData.findIndex((x) => x.postId == id);
+      }
+      localStorage.setItem(COMMENTS, JSON.stringify(commentData));
     }
-    localStorage.setItem(COMMENTS, JSON.stringify(commentData));
+
     setReload(reload + 1);
   };
 
