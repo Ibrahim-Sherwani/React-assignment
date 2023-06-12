@@ -1,18 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
 
 import * as CryptoJS from "crypto-js";
 
-import SignupPage from "./pages/SignupPage";
-import LoginPage from "./pages/LoginPage";
-import PostsPage from "./pages/PostsPage";
-import PostDetailPage from "./pages/PostDetailPage";
-import NavbarLayout from "./layouts/header/navbar";
+import RouterPage from "./pages/Router";
 import { SECRET_KEY, TOKEN } from "./components/constants";
 
 const App = () => {
@@ -51,37 +41,13 @@ const App = () => {
   }
 
   return (
-    <>
-      <Router>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              isUser ? (
-                <Navigate replace to={"/posts"} />
-              ) : (
-                <Navigate replace to={"/login"} />
-              )
-            }
-          />
-
-          <Route element={<NavbarLayout handleLogout={handleLogout} />}>
-            <Route path="posts" element={<PostsPage getUser={getUser} />} />
-            <Route
-              path="posts/:postId"
-              element={<PostDetailPage getUser={getUser} />}
-            />
-          </Route>
-
-          <Route
-            path="login"
-            element={<LoginPage updateToken={updateToken} user={user} />}
-          />
-
-          <Route path="signup" element={<SignupPage />} />
-        </Routes>
-      </Router>
-    </>
+    <RouterPage
+      isUser={isUser}
+      getUser={getUser}
+      user={user}
+      handleLogout={handleLogout}
+      updateToken={updateToken}
+    />
   );
 };
 
