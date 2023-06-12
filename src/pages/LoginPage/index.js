@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import bcrypt from "bcryptjs";
+import * as CryptoJS from "crypto-js";
+import { SECRET_KEY, TOKEN } from "../../components/constants/index";
+import "./LoginPage.css";
 
-const SignupPage = () => {
+const LoginPage = ({ updateToken, user }) => {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
@@ -13,11 +15,11 @@ const SignupPage = () => {
     setError(false);
   }, [email]);
 
-  const handleClick = () => navigate("/login");
+  useEffect(() => {
+    if (user) navigate("/posts");
+  }, [user]);
 
-  const handleNameChange = (e) => {
-    setName(e.target.value);
-  };
+  const handleClick = () => navigate("/signup");
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -27,18 +29,27 @@ const SignupPage = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const isInStorage = JSON.parse(localStorage.getItem(email));
-    if (!isInStorage) {
-      const hashedPassword = bcrypt.hashSync(password);
-      const payload = { name, email, hashedPassword };
+    if (
+      isInStorage &&
+      (await bcrypt.compare(password, isInStorage.hashedPassword))
+    ) {
+      const payload = { name: isInStorage.name, email };
 
-      localStorage.setItem(email, JSON.stringify(payload));
-      handleClick();
+      const token = CryptoJS.AES.encrypt(
+        JSON.stringify(payload),
+        SECRET_KEY
+      ).toString();
+
+      localStorage.setItem(TOKEN, JSON.stringify(token));
+
+      updateToken();
+      navigate("/");
+      return;
     }
-
     setError(true);
   };
 
@@ -48,35 +59,16 @@ const SignupPage = () => {
         <div className="container">
           <div className="row mb-5">
             <div className="col-md-8 col-xl-6 text-center mx-auto">
-              <h2>Sign Up</h2>
+              <h2>Login</h2>
               <p></p>
             </div>
           </div>
           <div className="row d-flex justify-content-center">
             <div className="col-md-6 col-xl-4">
               <div className="card mb-5">
-                <div
-                  className="card-body d-flex flex-column align-item-center"
-                  style={{
-                    "margin-bottom": "-1px",
-                    "margin-top": "50px",
-                    "padding-top": "53px",
-                    "padding-bottom": "86px",
-                  }}
-                >
-                  {error && <h4>User with this Email already exists</h4>}
+                <div className="card-body d-flex flex-column align-item-center card-styles">
+                  {error && <h4>Invalid Credentials</h4>}
                   <form className="text-center" onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                      <input
-                        type="text"
-                        id="name"
-                        placeholder="Name"
-                        value={name}
-                        onChange={handleNameChange}
-                        className="w-100"
-                        required
-                      />
-                    </div>
                     <div className="mb-3">
                       <input
                         type="email"
@@ -99,17 +91,15 @@ const SignupPage = () => {
                         required
                       />
                     </div>
-                    <div className="mb-3" style={{ display: "unset" }}>
+                    <div className="mb-3">
                       <button className="btn btn-primary w-100" type="submit">
-                        Signup
+                        LogIn
                       </button>
                       <button
-                        className="btn btn-primary w-100"
+                        className="btn btn-primary w-100 button-styles"
                         onClick={handleClick}
-                        style={{ "margin-top": "10px" }}
                       >
-                        {" "}
-                        Go To LogIn Page
+                        Go To SignUp Page
                       </button>
                     </div>
                   </form>
@@ -123,4 +113,4 @@ const SignupPage = () => {
   );
 };
 
-export default SignupPage;
+export default LoginPage;

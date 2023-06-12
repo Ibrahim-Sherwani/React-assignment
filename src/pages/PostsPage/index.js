@@ -1,8 +1,9 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { PostCard } from "./components/postCard";
-import useAxiosQuery from "./hooks/useAxiosQuery";
-import { POSTS, COMMENTS } from "./components/constants";
+import { PostCard } from "../../components/postCard";
+import useAxiosQuery from "../../hooks/useAxiosQuery";
+import { POSTS, COMMENTS } from "../../components/constants";
+import "./PostsPage.css";
 
 const PostsPage = ({ getUser }) => {
   const navigate = useNavigate();
@@ -90,7 +91,7 @@ const PostsPage = ({ getUser }) => {
   };
 
   return (
-    <div className="container-fluid" style={{ padding: "0px" }}>
+    <div className="container-fluid padding-unset">
       <div className="d-flex justify-content-center">
         <h1>Posts</h1>
       </div>
@@ -98,17 +99,9 @@ const PostsPage = ({ getUser }) => {
       <section className="py-4 py-xl-5">
         <div className="container">
           <div className="row d-flex justify-content-center">
-            <div className="col-md-6 col-xl-4" style={{ paddingLeft: "0px" }}>
+            <div className="col-md-6 col-xl-4 padding-left-unset">
               <div className="card mb-5 sm-3">
-                <div
-                  className="card-body d-flex flex-column align-item-center"
-                  style={{
-                    marginBottom: "-1px",
-                    marginTop: "50px",
-                    paddingTop: "53px",
-                    paddingBottom: "86px",
-                  }}
-                >
+                <div className="card-body d-flex flex-column align-item-center card-styles">
                   <div className="row mb-2">
                     <div className="col-md-8 col-xl-6 text-center mx-auto">
                       <h3>Add a new Post</h3>

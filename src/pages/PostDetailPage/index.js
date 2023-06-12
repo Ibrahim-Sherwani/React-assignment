@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { PostCard } from "./components/postCard";
-import useAxiosQuery from "./hooks/useAxiosQuery";
-import { CommentCard } from "./components/commentCard";
-import { COMMENTS, POSTS } from "./components/constants";
+import { PostCard } from "../../components/postCard";
+import useAxiosQuery from "../../hooks/useAxiosQuery";
+import { CommentCard } from "../../components/commentCard";
+import { COMMENTS, POSTS } from "../../components/constants";
+import "./PostDetailPage.css";
 
 const PostsPage = ({ getUser }) => {
   const addButtonRef = useRef(null);
@@ -62,35 +63,28 @@ const PostsPage = ({ getUser }) => {
     addButtonRef.current.focus();
   };
 
-  const post = posts.findIndex((x) => x.id == postId);
+  const post = posts.find((x) => x.id == postId);
+
   return (
-    <div className="container-fluid" style={{ padding: "0px" }}>
+    <div className="container-fluid padding-unset">
       <div className="d-flex justify-content-center">
         <h1>Post</h1>
       </div>
       <div className="row d-flex justify-content-center m-3">
         <PostCard
           key={postId}
-          userId={posts[post].userId}
+          userId={post.userId}
           id={postId}
-          title={posts[post].title}
-          body={posts[post].body}
+          title={post.title}
+          body={post.body}
         ></PostCard>
 
-        <section className="py-4 py-xl-5" style={{ paddingLeft: "0px" }}>
-          <div className="container" style={{ paddingLeft: "0px" }}>
+        <section className="py-4 py-xl-5 padding-left-unset">
+          <div className="container padding-left-unset">
             <div className="row d-flex justify-content-center">
-              <div className="col-md-6 col-xl-4" style={{ paddingLeft: "0px" }}>
+              <div className="col-md-6 col-xl-4 padding-left-unset">
                 <div className="card mb-5 sm-3">
-                  <div
-                    className="card-body d-flex flex-column align-item-center"
-                    style={{
-                      marginBottom: "-1px",
-                      marginTop: "50px",
-                      paddingTop: "53px",
-                      paddingBottom: "86px",
-                    }}
-                  >
+                  <div className="card-body d-flex flex-column align-item-center card-styles">
                     <div className="row mb-2">
                       <div className="col-md-8 col-xl-6 text-center mx-auto">
                         <h3>Add a new Comment</h3>

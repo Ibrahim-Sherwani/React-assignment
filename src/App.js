@@ -8,11 +8,11 @@ import {
 
 import * as CryptoJS from "crypto-js";
 
-import SignupPage from "./SignupPage";
-import LoginPage from "./LoginPage";
-import PostsPage from "./PostsPage";
-import PostDetailPage from "./PostDetailPage";
-import { Navbar } from "./components/navbar";
+import SignupPage from "./pages/SignupPage";
+import LoginPage from "./pages/LoginPage";
+import PostsPage from "./pages/PostsPage";
+import PostDetailPage from "./pages/PostDetailPage";
+import NavbarLayout from "./layouts/header/navbar";
 import { SECRET_KEY, TOKEN } from "./components/constants";
 
 const App = () => {
@@ -64,28 +64,20 @@ const App = () => {
               )
             }
           />
-          <Route
-            path="posts"
-            element={
-              <>
-                <Navbar handleLogout={handleLogout} />{" "}
-                <PostsPage getUser={getUser} />
-              </>
-            }
-          />
-          <Route
-            path="posts/:postId"
-            element={
-              <>
-                <Navbar handleLogout={handleLogout} />{" "}
-                <PostDetailPage getUser={getUser} />
-              </>
-            }
-          />
+
+          <Route element={<NavbarLayout handleLogout={handleLogout} />}>
+            <Route path="posts" element={<PostsPage getUser={getUser} />} />
+            <Route
+              path="posts/:postId"
+              element={<PostDetailPage getUser={getUser} />}
+            />
+          </Route>
+
           <Route
             path="login"
             element={<LoginPage updateToken={updateToken} user={user} />}
           />
+
           <Route path="signup" element={<SignupPage />} />
         </Routes>
       </Router>
